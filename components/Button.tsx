@@ -10,7 +10,7 @@ type Props = {
    text: string;
    dark?: boolean;
    full?: boolean;
-   clickHandler?: any; 
+   clickHandler?: () => void; 
 };
 
 export default function Button({ text, dark, full, clickHandler }: Props) {

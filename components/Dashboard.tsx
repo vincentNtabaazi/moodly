@@ -1,6 +1,5 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import Main from './Main'
 import { Fugaz_One } from 'next/font/google';
 import Calender from './Calender';
 import { useAuth } from '@/context/AuthContext';
@@ -15,22 +14,30 @@ const fugaz = Fugaz_One({
 });
 
 type Statuses = {
-   // num_days: number;
-   // average_mood: string;
    time_remaining: string;
 }
+
+type dataObjectType = {
+   [year: number]: {
+      [month: number]: {
+        [day: number]: number;
+      }
+    }
+}
+
 export default function Dashboard() {
    const now = new Date()
    const { currentUser, userDataObj, setUserDataObj, loading } = useAuth()
-   const [data, setData] = useState<any>({})
+   const [data, setData] = useState<dataObjectType>({})
+   
 
    function countValues() {
       let total_number_of_days = 0
       let sum_moods = 0
-      for (let year in data) {
-         for (let month in data[year]) {
-            for (let day in data[year][month]) {
-               let days_mood = data[year][month][day]
+      for (const year in data) {
+         for (const month in data[year]) {
+            for (const day in data[year][month]) {
+               const days_mood = data[year][month][day]
                total_number_of_days ++
                sum_moods += days_mood
             }
@@ -47,7 +54,7 @@ export default function Dashboard() {
    }
 
 
-   async function handleSetMood(mood: Number) {
+   async function handleSetMood(mood: number) {
       const day = now.getDate()
       const month = now.getMonth()
       const year = now.getFullYear()
@@ -72,7 +79,7 @@ export default function Dashboard() {
          const docRef = doc(db, 'users', currentUser.uid)
          if (year && month && day && mood) {
 
-            const res = await setDoc(docRef, {
+            await setDoc(docRef, {
                [year]: {
                   [month]: {
                      [day]: mood
@@ -83,13 +90,17 @@ export default function Dashboard() {
             console.error("Invalid data: year, month, day, or mood is undefined");
          }
 
-      } catch (error: any) {
-         console.log('Failed to set data: ', error.message)
+      } catch (error: unknown) {
+         if (error instanceof Error) {
+            console.log('Failed to set data: ', error.message)
+         } else {
+            console.log('Failed to set data: ', error);
+         }
       }
    }
 
 
-   const moods: any = {
+   const moods: { [key: string]: string } = {
       '&*@#$': '😭',
       'Sad': '😢',
       'Existing': '🙁',

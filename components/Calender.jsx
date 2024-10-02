@@ -30,7 +30,7 @@ const daylist = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday
 const monthsArr = Object.keys(months)
 
 export default function Calender(props) {
-   const { demo, completeData, handleSetMood } = props
+   const { demo, completeData } = props
    const now = new Date()
    const currMonth = now.getMonth()
    const [selectedMonth, setSelectedMonth] = useState(Object.keys(months)[currMonth])

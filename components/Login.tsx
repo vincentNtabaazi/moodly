@@ -30,8 +30,12 @@ export default function Login() {
             console.log('Logging in existing user.')
             await login(email, password)
          }
-      } catch ( error : any) {
-         console.log(error.message)
+      } catch ( error : unknown) {
+         if (error instanceof Error) {
+            console.log('Failed to set data: ', error.message)
+         } else {
+            console.log('Failed to set data: ', error);
+         }
       } finally {
          setAuthenticating(false)
       }
